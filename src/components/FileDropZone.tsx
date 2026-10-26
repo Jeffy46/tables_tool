@@ -1,4 +1,4 @@
-import { type Dispatch, type SetStateAction, type JSX } from "react";
+import { useEffect, type Dispatch, type SetStateAction, type JSX } from "react";
 import { useDropzone } from "react-dropzone";
 import Papa, { type ParseResult } from "papaparse";
 import {
@@ -7,6 +7,12 @@ import {
   type AttendeeRow,
 } from "../interface/AttendeeRow";
 import type { DroppedFileInfo } from "../interface/DroppedFileInfo";
+import {
+  getMajorByEmail,
+  normalizeEmail,
+  normalizeMajor,
+  subscribeToMajorUpdates,
+} from "../utils/majorStore";
 
 export interface FileDropZoneProps {
   data: DroppedFileInfo[];
@@ -25,6 +31,29 @@ const FileDropZone = ({
   data: _data,
   setData,
 }: FileDropZoneProps): JSX.Element => {
+  useEffect(() => {
+    const unsubscribe = subscribeToMajorUpdates(() => {
+      setData((oldData: DroppedFileInfo[]): DroppedFileInfo[] =>
+        oldData.map((fileInfo: DroppedFileInfo) => ({
+          ...fileInfo,
+          attendees: fileInfo.attendees.map((attendee: AttendeeRow) => {
+            const mappedMajor = getMajorByEmail(attendee.email);
+            return {
+              ...attendee,
+              major:
+                mappedMajor ||
+                (attendee.major !== "Unknown"
+                  ? normalizeMajor(attendee.major)
+                  : "Unknown"),
+            };
+          }),
+        })),
+      );
+    });
+
+    return unsubscribe;
+  }, [setData]);
+
   const {
     getRootProps,
     getInputProps,
@@ -48,19 +77,25 @@ const FileDropZone = ({
                 (row: Record<string, string>): boolean =>
                   row[RSVP_HEADER]?.trim().toLowerCase() === "yes",
               )
-              .map(
-                (row: Record<string, string>): AttendeeRow => ({
+              .map((row: Record<string, string>): AttendeeRow => {
+                const cleanEmail =
+                  normalizeEmail(row[HEADER_MAP.email]) || "Unknown";
+                const rawCsvMajor = row[HEADER_MAP.major]?.trim();
+
+                return {
                   first_name: row[HEADER_MAP.first_name]?.trim() || "Unknown",
                   last_name: row[HEADER_MAP.last_name]?.trim() || "Unknown",
-                  email: row[HEADER_MAP.email]?.trim() || "Unknown",
+                  email: cleanEmail,
                   account_type: row[HEADER_MAP.account_type]?.trim() || "Guest",
-                  major: row[HEADER_MAP.major]?.trim() || "Unknown",
+                  major:
+                    getMajorByEmail(cleanEmail) ||
+                    (rawCsvMajor ? normalizeMajor(rawCsvMajor) : "Unknown"),
                   registration_time: parseDate(
                     row[HEADER_MAP.registration_time],
                   ),
                   check_in_time: parseDate(row[HEADER_MAP.check_in_time]),
-                }),
-              );
+                };
+              });
 
             const curFile: DroppedFileInfo = {
               name: file.name,
@@ -103,8 +138,8 @@ const FileDropZone = ({
           </p>
         )}
         {!isDragGlobal && !isDragActive && (
-          <p className="text-slate-600">
-            Drag &amp; drop a CSV file here, or click to select
+          <p className="text-slate-600 text-center">
+            Drag &amp; drop a SBEngaged CSV file here, or click to select
           </p>
         )}
       </div>

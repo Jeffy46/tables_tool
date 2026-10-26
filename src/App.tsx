@@ -8,9 +8,9 @@ let App = () => {
   const [curSelected, setCurSelected] = useState<DroppedFileInfo[]>([]);
   console.log(curSelected);
   return (
-    <main className="grid grid-cols-[1fr_4fr] min-h-dvh">
+    <main className="grid grid-cols-[2fr_6fr] min-h-dvh">
       <div className="border border-black w-full min-h-dvh p-10">
-        <section className="grid grid-rows-2 grid-flow-col gap-4 h-full">
+        <section className="grid grid-rows-3 grid-flow-col gap-4 h-full">
           <InputSection
             data={data}
             setData={setData}

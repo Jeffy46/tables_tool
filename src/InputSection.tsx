@@ -1,5 +1,6 @@
 import FileDropZone from "./components/FileDropZone";
 import InputtedFiles from "./components/InputtedFiles";
+import MajorDropZone from "./components/MajorDropZone";
 import type { DroppedFileInfo } from "./interface/DroppedFileInfo";
 
 interface InputProps {
@@ -17,6 +18,8 @@ let InputSection = ({
   return (
     <>
       <FileDropZone data={data} setData={setData} />
+      <MajorDropZone></MajorDropZone>
+
       <InputtedFiles
         data={data}
         setData={setData}
