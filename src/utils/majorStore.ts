@@ -1,5 +1,3 @@
-const STORAGE_KEY = "sbu_email_to_major_session_db";
-
 const KNOWN_MAJOR_MAP: Record<string, string> = {
   bme: "Biomedical Engineering",
   "pre-bme": "Biomedical Engineering",
@@ -74,19 +72,7 @@ export const normalizeMajor = (rawMajor?: string): string => {
   return rawMajor.trim();
 };
 
-// Uses sessionStorage so data persists across route/component changes,
-// but automatically clears when the browser tab is fully reloaded or closed.
-const loadInitialMap = (): Map<string, string> => {
-  try {
-    const raw = sessionStorage.getItem(STORAGE_KEY);
-    if (!raw) return new Map();
-    return new Map(Object.entries(JSON.parse(raw) as Record<string, string>));
-  } catch {
-    return new Map();
-  }
-};
-
-export const majorHashMap: Map<string, string> = loadInitialMap();
+export const majorHashMap = new Map<string, string>();
 
 type Listener = () => void;
 const listeners = new Set<Listener>();
@@ -99,12 +85,6 @@ export const subscribeToMajorUpdates = (listener: Listener): (() => void) => {
 };
 
 export const notifyMajorUpdates = (): void => {
-  try {
-    const obj = Object.fromEntries(majorHashMap.entries());
-    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(obj));
-  } catch (err) {
-    console.error("Failed to persist majorHashMap to sessionStorage:", err);
-  }
   listeners.forEach((listener) => listener());
 };
 

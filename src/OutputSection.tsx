@@ -2,7 +2,7 @@ import LeadTimeTurnoutChart from "./components/charts/LeadTimeTurnoutChart";
 import RegistrationLineChart from "./components/charts/RegistrationLineChart";
 import type { DroppedFileInfo } from "./interface/DroppedFileInfo";
 import MajorDistributionChart from "./components/charts/MajorDistributionChart";
-import Sankey from "./components/charts/Sankey";
+import EventSankeyChart from "./components/charts/EventSankeyChart";
 
 interface OutputProps {
   curSelected: DroppedFileInfo[];
@@ -22,7 +22,7 @@ let OutputSection = ({ curSelected }: OutputProps) => {
       <RegistrationLineChart curData={curSelected} />
       <LeadTimeTurnoutChart curData={curSelected} />
       <MajorDistributionChart curData={curSelected} />
-      <Sankey></Sankey>
+      <EventSankeyChart curData={curSelected} />
     </div>
   );
 };

@@ -73,10 +73,10 @@ const MajorDropZone = (): JSX.Element => {
   });
 
   return (
-    <div className="h-full">
+    <div className="h-[33.33vh]">
       <div
         {...getRootProps()}
-        className="flex-1 min-h-0 flex flex-col items-center justify-center p-8 border-2 border-dashed rounded cursor-pointer h-full"
+        className="flex-1 min-h-0 flex flex-col items- justify-center p-8 border-2 border-dashed rounded cursor-pointer h-full"
       >
         <input {...getInputProps()} />
 

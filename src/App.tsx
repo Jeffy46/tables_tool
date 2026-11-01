@@ -10,7 +10,7 @@ let App = () => {
   return (
     <main className="grid grid-cols-[2fr_6fr] min-h-dvh">
       <div className="border border-black w-full min-h-dvh p-10">
-        <section className="grid grid-rows-3 grid-flow-col gap-4 h-full">
+        <section className="grid grid-rows-[33.33vh_33.33vh_1fr] grid-flow-col gap-4 h-full">
           <InputSection
             data={data}
             setData={setData}

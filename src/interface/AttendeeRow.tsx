@@ -8,7 +8,7 @@ export interface AttendeeRow {
   check_in_time: Date | null;
 }
 export const RSVP_HEADER: string = "RSVP'ed";
-// In types.ts
+
 export const HEADER_MAP = {
   first_name: "First Name",
   last_name: "Last Name",
