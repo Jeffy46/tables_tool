@@ -52,10 +52,9 @@ const EVENT_BOX = { width: 84, height: 200, y: 220 } as const;
 
 const getEarliestTimestamp = (file: DroppedFileInfo): number => {
   let min = Infinity;
-  for (const { check_in_time, registration_time } of file.attendees) {
-    const time = check_in_time ?? registration_time;
-    if (time) {
-      const val = new Date(time).getTime();
+  for (const { check_in_time } of file.attendees) {
+    if (check_in_time) {
+      const val = new Date(check_in_time).getTime();
       if (!Number.isNaN(val) && val < min) min = val;
     }
   }
@@ -69,7 +68,7 @@ export const EventSankeyChart = ({
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
   const [hoveredLink, setHoveredLink] = useState<FlowLink | null>(null);
 
-  // 1. Flatten and sort events chronologically (exact original logic preserved)
+  // 1. Flatten and sort events chronologically
   const events = useMemo<ProcessedEvent[]>(() => {
     const flat =
       Array.isArray(curData[0]) && "attendees" in (curData[0] as any[])[0]
